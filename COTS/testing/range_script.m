@@ -1,4 +1,4 @@
-close all; clear all;
+close all; clear; clc;
 
 %% COMPUTE RANGE FROM AUDIO FILE
 % Read the audiofile 
