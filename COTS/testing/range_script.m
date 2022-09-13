@@ -41,6 +41,18 @@ end
 % MS Clutter Rejection
 final_data = bsxfun(@minus, up_data_parsed, mean(up_data_parsed, 1)); % Subtract column mean to each column
 
+% 2-step MTI
+MTI2 = zeros(size(up_data_parsed));
+for t = 2:size(up_data_parsed,1)
+    MTI2(t,:) = up_data_parsed(t,:) - up_data_parsed(t-1,:);
+end
+
+% 3-step MTI
+MTI3 = zeros(size(up_data_parsed));
+for t = 3:size(up_data_parsed,1)
+    MTI3(t,:) = up_data_parsed(t,:) - 2*up_data_parsed(t-1,:) + up_data_parsed(t-2,:);
+end
+
 % FFT - No MS
 sfft = 20*log10(abs(fft(up_data_parsed, 4*N, 2))); % dft using zero padding
 sfft = sfft(:, 1:end/2) - max(max(sfft));          % Normalize data
@@ -49,6 +61,16 @@ sfft = sfft(:, 1:end/2) - max(max(sfft));          % Normalize data
 sfft_ms = 20*log10(abs(fft(final_data, 4*N, 2)));  % dft using zero padding
 sfft_ms = sfft_ms(:, 1:end/2) - max(max(sfft_ms)); % Normalize data  
 
+% FFT - MTI2
+sfft_MTI2 = 20*log10(abs(fft(MTI2, 4*N, 2)));  % dft using zero padding
+sfft_MTI2 = sfft_MTI2(:, 1:end/2) - max(max(sfft_MTI2)); % Normalize data  
+
+% FFT - MTI3
+sfft_MTI3 = 20*log10(abs(fft(MTI3, 4*N, 2)));  % dft using zero padding
+sfft_MTI3 = sfft_MTI3(:, 1:end/2) - max(max(sfft_MTI3)); % Normalize data  
+
+
+
 range = linspace(0, max_range, 4*N);    
 
 % Plotting
@@ -56,21 +78,21 @@ f_start_plot = f_start/1e9;
 f_stop_plot = f_stop/1e9;
 
 a1=subplot(1,2,1);
-imagesc(a1, range, time, sfft);
-xlim([0 100]);
-xlabel('Range (m)');
-ylabel('Time (s)');
-colorbar;
-caxis([-30 0]);
-title("RTI without clutter rejection, Tp="+Tp+"ms, f_{start}="+f_start_plot+"GHz, f_{stop}="+f_stop_plot+"GHz");
-
-a2=subplot(1,2,2);
-imagesc(a2, range, time, sfft_ms);
+imagesc(a1, range, time, sfft_MTI2);
 xlim([0 100]);
 xlabel('Range (m)');
 ylabel('Time (s)');
 colorbar;
 caxis([-40 0]);
-title("RTI with clutter rejection, Tp="+Tp+"ms, f_{start}="+f_start_plot+"GHz, f_{stop}="+f_stop_plot+"GHz");
+title("2 point MTI, Tp="+Tp+"ms, f_{start}="+f_start_plot+"GHz, f_{stop}="+f_stop_plot+"GHz");
+
+a2=subplot(1,2,2);
+imagesc(a2, range, time, sfft_MTI3);
+xlim([0 100]);
+xlabel('Range (m)');
+ylabel('Time (s)');
+colorbar;
+caxis([-40 0]);
+title("3 point MTI, Tp="+Tp+"ms, f_{start}="+f_start_plot+"GHz, f_{stop}="+f_stop_plot+"GHz");
 
 
