@@ -2,7 +2,7 @@ close all; clear; clc;
 
 %% COMPUTE RANGE FROM AUDIO FILE
 % Read the audiofile 
-[y,Fs] = audioread('Range_Test_File.m4a'); 
+[y,Fs] = audioread('audacity_recordings\multiple_targets_range.wav'); 
 
 % Separate the sync data and radar backscatter data and take care of data
 % inversion by the sound card

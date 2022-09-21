@@ -2,7 +2,9 @@ close all; clear; clc;
 
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile 
-[y,Fs] = audioread('Velocity_Test_File.m4a'); 
+% [y,Fs] = audioread('Velocity_Test_File.m4a'); 
+[y,Fs] = audioread('audacity_recordings\multiple_targets_velocity.wav'); 
+
 
 % Take care of data inversion by the sound card
 data = -y(:,1); % Intensity of the received signal
@@ -20,6 +22,7 @@ data_parsed = reshape(data_cut, N, [])';
 
 % MS Clutter Rejection
 final_data = bsxfun(@minus, data_parsed, mean(data_parsed, 2)); % Subtract column mean to each column
+% final_data = data_parsed;
 
 % FFT 
 f = abs(fft(final_data, 4*N, 2));
@@ -41,19 +44,46 @@ time2 = linspace(1, Tp * size(f2,1), size(f2,1));
 
 % Plotting
 f_c_plot = f_center/1e9;
-
+figure(1);
 a1=subplot(1,2,1);
 imagesc(vel1, time1, f1);
-caxis([-45 0]);
+caxis([-30 0]);
 colorbar;
-set(gca,'XLim',[0 40]);
+set(gca,'XLim',[0 20]);
 xlabel('Velocity [m/sec]'); ylabel('Time [sec]');
 title("Normalization 1, Pulse time T_p="+Tp+"s, Center Frequency fc="+f_c_plot+"GHz");
 
 a2=subplot(1,2,2);
 imagesc(vel2, time2, f2);
-caxis([-15 0]);
+caxis([-10 0]);
 colorbar;
-set(gca,'XLim',[0 40]);
+set(gca,'XLim',[0 20]);
 xlabel('Velocity [m/sec]'); ylabel('Time [sec]');
 title("Normalization 2, Pulse time T_p="+Tp+"s, Center Frequency fc="+f_c_plot+"GHz");
+
+%% Velocity time plot
+% First, find all peaks. Then check the peaks with biggest prominence and
+% get the indices of these peaks in f2
+f2_smooth = smoothdata(f2,1);
+vel_max1 = zeros(size(f2_smooth,1),1);
+vel_max2 = zeros(size(f2_smooth,1),1);
+for i = 1:size(f2_smooth,1)
+    [~, locs, ~, prominence] = findpeaks(f2_smooth(i,:),'MinPeakHeight', -20);
+    [~, ind] = maxk(prominence, 2);
+    vel_max1(i) = vel2(locs(ind(1)));
+    vel_max2(i) = vel2(locs(ind(2)));
+end
+
+figure(2);
+%[~, f_ind] = maxk(f2,2,2);
+%vel_max1 = vel2(f_ind(:,1));
+%vel_max2 = vel2(f_ind(:,2));
+hold on
+plot(time2, vel_max1)
+plot(time2, vel_max2)
+grid on
+ylim([0, 7]);
+title("Speed-time plot")
+xlabel("time"), ylabel("Speed")
+hold off
+
