@@ -47,7 +47,7 @@ f_c_plot = f_center/1e9;
 figure(1);
 a1=subplot(1,2,1);
 imagesc(vel1, time1, f1);
-caxis([-30 0]);
+caxis([-40 0]);
 colorbar;
 set(gca,'XLim',[0 20]);
 xlabel('Velocity [m/sec]'); ylabel('Time [sec]');
@@ -61,10 +61,12 @@ set(gca,'XLim',[0 20]);
 xlabel('Velocity [m/sec]'); ylabel('Time [sec]');
 title("Normalization 2, Pulse time T_p="+Tp+"s, Center Frequency fc="+f_c_plot+"GHz");
 
+
 %% Velocity time plot
 % First, find all peaks. Then check the peaks with biggest prominence and
 % get the indices of these peaks in f2
 f2_smooth = smoothdata(f2,1);
+% f2_smooth = f2;
 vel_max1 = zeros(size(f2_smooth,1),1);
 vel_max2 = zeros(size(f2_smooth,1),1);
 for i = 1:size(f2_smooth,1)
@@ -74,6 +76,29 @@ for i = 1:size(f2_smooth,1)
     vel_max2(i) = vel2(locs(ind(2)));
 end
 
+% acc2 = zeros(size(vel_max2,1)-1,1);
+% acc1 = zeros(size(vel_max1,1)-1,1);
+% 
+% 
+% for i = 2:size(vel_max2,1)
+%     der = abs((vel_max2(i) - vel_max2(i-1))/(time2(2)-time2(1)));
+%     acc2(i-1) = der;
+%     if acc2(i-1) > 10
+%         vel_max2(i) = 0;
+%     end
+% end
+% 
+% for i = 2:size(vel_max1,1)
+%     der = abs((vel_max1(i) - vel_max1(i-1))/(time1(2)-time1(1)));
+%     acc1(i-1) = der;
+%     if acc1(i-1) > 10
+%         vel_max1(i) = 0;
+%     end
+% end
+% 
+% vel_max1(1) = 0;
+% vel_max2(1) = 0;
+
 figure(2);
 %[~, f_ind] = maxk(f2,2,2);
 %vel_max1 = vel2(f_ind(:,1));
@@ -81,9 +106,12 @@ figure(2);
 hold on
 plot(time2, vel_max1)
 plot(time2, vel_max2)
+% plot(time2(2:end), acc2)
+% plot(time2(2:end), acc1)
 grid on
-ylim([0, 7]);
+% ylim([0, 7]);
 title("Speed-time plot")
 xlabel("time"), ylabel("Speed")
+legend('vel1','vel2')
 hold off
 
