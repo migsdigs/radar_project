@@ -3,7 +3,7 @@ close all; clear; clc;
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile 
 % [y,Fs] = audioread('Velocity_Test_File.m4a'); 
-[y,Fs] = audioread('audacity_recordings\multiple_targets_velocity.wav'); 
+[y,Fs] = audioread('audacity_recordings\jonne_sprint_away_towards.wav'); 
 
 
 % Take care of data inversion by the sound card
@@ -65,7 +65,7 @@ title("Normalization 2, Pulse time T_p="+Tp+"s, Center Frequency fc="+f_c_plot+"
 %% Velocity time plot
 % First, find all peaks. Then check the peaks with biggest prominence and
 % get the indices of these peaks in f2
-k = 2; %Number of targets
+k = 1; %Number of targets
 treshhold = -15; %dB treshhold to indicate there is a target
 
 f2_smooth = smoothdata(f2,1);
@@ -92,4 +92,13 @@ title("Speed-time plot")
 xlabel("time"), ylabel("Speed")
 legend('vel1','vel2')
 hold off
+
+figure(3), clf();
+subplot(1,3,1); plot(data); title("Data Captured");
+
+subplot(1,3,2); imagesc(vel2, time2, f2); caxis([-10 0]); colorbar; set(gca,'XLim',[0 20]); 
+xlabel('Velocity [m/s]'); ylabel('Time [s]'); title("Velocity vs Time Spectrogram"); 
+
+subplot(1,3,3); plot(time2, vel_max); grid on; title("Velocity vs Time Plot");
+ylim([0, 7]); xlabel("Time [s]"), ylabel("Velocity [m/s]"); legend('vel1','vel2')
 

@@ -207,3 +207,38 @@ ylabel('Time (s)');
 colorbar;
 caxis([-40 0]);
 title("3 point MTI, Tp="+Tp+"ms, f_{start}="+f_start_plot+"GHz, f_{stop}="+f_stop_plot+"GHz");
+
+%% Plots for task 3
+
+% First, find all peaks. Then check the peaks with biggest prominence and
+% get the indices of these peaks in f2
+k = 2; %Number of targets
+treshhold = -20; %dB treshhold to indicate there is a target
+
+f_smooth = smoothdata(sfft_ms,1);
+% f_smooth = sfft;
+range_max = zeros(size(f_smooth,1),k);
+for i = 1:size(f_smooth,1)
+    [~, locs, ~, prominence] = findpeaks(f_smooth(i,:));
+    [~, ind] = maxk(prominence, k);
+    
+    for j = 1:k
+        % Only accept peaks if their intensity is above a treshhold
+        if f_smooth(i,locs(ind(j))) < treshhold
+            range_max(i,j) = 0;
+        else
+            range_max(i,j) = range(locs(ind(j)));
+        end
+    end
+end
+
+figure(3), clf();
+subplot(1,3,1); plot(data); title("Data Captured");
+
+subplot(1,3,2); imagesc(range, time, sfft_MTI3); xlim([0 100]); xlabel('Range (m)'); ylabel('Time (s)');
+colorbar; caxis([-40 0]); title("Range vs Time Spectrogram");
+
+subplot(1,3,3); plot(time, range_max); grid on; title("Range vs Time Plot");
+ylim([0, 30]); xlabel("Time [s]"), ylabel("Range [m]"); legend('range1','range2')
+
+
