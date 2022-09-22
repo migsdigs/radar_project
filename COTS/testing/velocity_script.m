@@ -65,51 +65,29 @@ title("Normalization 2, Pulse time T_p="+Tp+"s, Center Frequency fc="+f_c_plot+"
 %% Velocity time plot
 % First, find all peaks. Then check the peaks with biggest prominence and
 % get the indices of these peaks in f2
+k = 2; %Number of targets
+treshhold = -15; %dB treshhold to indicate there is a target
+
 f2_smooth = smoothdata(f2,1);
-% f2_smooth = f2;
-vel_max1 = zeros(size(f2_smooth,1),1);
-vel_max2 = zeros(size(f2_smooth,1),1);
+vel_max = zeros(size(f2_smooth,1),k);
 for i = 1:size(f2_smooth,1)
-    [~, locs, ~, prominence] = findpeaks(f2_smooth(i,:),'MinPeakHeight', -20);
-    [~, ind] = maxk(prominence, 2);
-    vel_max1(i) = vel2(locs(ind(1)));
-    vel_max2(i) = vel2(locs(ind(2)));
+    [~, locs, ~, prominence] = findpeaks(f2_smooth(i,:));
+    [~, ind] = maxk(prominence, k);
+    
+    for j = 1:k
+        % Only accept peaks if their intensity is above a treshhold
+        if f2_smooth(i,locs(ind(j))) < treshhold
+            vel_max(i,j) = 0;
+        else
+            vel_max(i,j) = vel2(locs(ind(j)));
+        end
+    end
 end
 
-% acc2 = zeros(size(vel_max2,1)-1,1);
-% acc1 = zeros(size(vel_max1,1)-1,1);
-% 
-% 
-% for i = 2:size(vel_max2,1)
-%     der = abs((vel_max2(i) - vel_max2(i-1))/(time2(2)-time2(1)));
-%     acc2(i-1) = der;
-%     if acc2(i-1) > 10
-%         vel_max2(i) = 0;
-%     end
-% end
-% 
-% for i = 2:size(vel_max1,1)
-%     der = abs((vel_max1(i) - vel_max1(i-1))/(time1(2)-time1(1)));
-%     acc1(i-1) = der;
-%     if acc1(i-1) > 10
-%         vel_max1(i) = 0;
-%     end
-% end
-% 
-% vel_max1(1) = 0;
-% vel_max2(1) = 0;
-
-figure(2);
-%[~, f_ind] = maxk(f2,2,2);
-%vel_max1 = vel2(f_ind(:,1));
-%vel_max2 = vel2(f_ind(:,2));
-hold on
-plot(time2, vel_max1)
-plot(time2, vel_max2)
-% plot(time2(2:end), acc2)
-% plot(time2(2:end), acc1)
+figure(2), clf(), hold on
+plot(time2, vel_max)
 grid on
-% ylim([0, 7]);
+ylim([0, 7]);
 title("Speed-time plot")
 xlabel("time"), ylabel("Speed")
 legend('vel1','vel2')
