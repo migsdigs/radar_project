@@ -16,9 +16,7 @@ f_stop = 2.495e9;             % Stop Frequency  [Hz]
 bandwidth = f_stop - f_start; % [Hz]
 
 pad = 4;
-wf = 132;
-range_max = 20;
-velo_max = 20;
+wf = 64;
 
 % Take care of data inversion by the sound card
 data = -y(:,1); % Intensity of the received signal
@@ -36,7 +34,7 @@ data_t = linspace(0, wf*Tp, wf);
 
 % create figure
 figure('Units', 'normalized', 'OuterPosition', [0 0 0.4 0.4]);
-spectrogram = imagesc(data_v, data_t, spec_vel, [-20 0]); colorbar; set(gca,'XLim',[0 20]);
+spectrogram = imagesc(data_v, data_t, spec_vel, [-10 0]); colorbar; set(gca,'XLim',[0 20]);
 title("Velocity vs Time Spectrogram"); xlabel('Velocity [m/s]'); ylabel('Time [s]');
 
 for i = 1 : floor(size(data,1)/N)
