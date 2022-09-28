@@ -7,9 +7,9 @@ close all; clear; clc;
 % Separate the sync data and radar backscatter data and take care of data
 % inversion by the sound card
 data = -y(:,1); % Radar backscatter data (received reflected signal)
-sync = y(:,2); % Sync data (square waveform)
+sync = -y(:,2); % Sync data (square waveform)
 
-Trp = 0.25;      %[s] Duration of measuring at each position
+Trp = 0.5;      %[s] Duration of measuring at each position
 Nrp = Trp*Fs;   %[ ] Number of samples at each position
 Tp = 20e-3;     %[s] Upchirp length
 N = Tp*Fs;      %[ ] Number of samples per upchirp
@@ -69,4 +69,5 @@ Xa = linspace(-(lambda/2*numberOfPositions)/2,(lambda/2*numberOfPositions)/2,num
 figure(), clf()
 imagesc(Kr,Xa,angle(windowed))
 colorbar;
+
 %% RANGE MIGRATION ALGORITHM
