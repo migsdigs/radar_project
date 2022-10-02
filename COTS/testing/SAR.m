@@ -195,4 +195,4 @@ truncated_db = 20 * log10(abs(truncated_final));
 
 figure();
 imagesc(cross_range, down_range, truncated_db);  
-xlim([-70 70]); caxis([-60 -10]); colorbar;
+xlim([-70 70]); caxis([-60 -15]); colorbar;
