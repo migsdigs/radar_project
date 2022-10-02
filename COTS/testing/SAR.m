@@ -21,33 +21,80 @@ fStart = 2.408e9;   % Start Frequency [Hz]
 fStop = 2.495e9;    % Stop Frequency  [Hz]
 
 
-sync = (sync > 0.25)'; % Set sync signal to 0 or 1
+% sync = (sync > 0.25)'; % Set sync signal to 0 or 1
+% 
+% % Find start of positions. This is where there is at least N+1 zeros
+% % followed by N ones
+% sequenceToFind = [zeros(1,2*N), ones(1, 0.5*N)];
+% found = strfind(sync, sequenceToFind);
+% startIndices = found + 2*N + Nrp;
+% numberOfPositions = length(startIndices);
+% 
+% dataMatrix = zeros(numberOfPositions,Nrp);
+% syncMatrix = zeros(numberOfPositions,Nrp);
+% for k = 1:numberOfPositions
+%     dataMatrix(k,:) = data(startIndices(k):startIndices(k)+Nrp-1);
+%     syncMatrix(k,:) = sync(startIndices(k):startIndices(k)+Nrp-1);
+% end
+% 
+% % APPLYING HILBERT TRANSFORM
+% % First, integrate over all up-chirps
+% dataIntegrated = zeros(numberOfPositions,N);
+% sequenceToFind = [0, 0, 1, 1];
+% for k = 1:numberOfPositions
+%     upchirpStart = strfind(syncMatrix(k,:),sequenceToFind);
+%     for j = 1:(length(upchirpStart)-1)
+%         dataIntegrated(k,:) = dataIntegrated(k,:) + dataMatrix(k,(upchirpStart(j)+2):(upchirpStart(j)+1+N));
+%     end
+%     dataIntegrated(k,:) = dataIntegrated(k,:)/length(upchirpStart);
+% end
 
-% Find start of positions. This is where there is at least N+1 zeros
-% followed by N ones
-sequenceToFind = [zeros(1,2*N), ones(1, 0.5*N)];
-found = strfind(sync, sequenceToFind);
-startIndices = found + 2*N + Nrp;
-numberOfPositions = length(startIndices);
+% separate square waveform and data
+data_bs = data;
+data_sc = sync >= 0.25;
+data_N = round(Tp * Fs);
+data_Nrp = ceil(Trp * Fs);
 
-dataMatrix = zeros(numberOfPositions,Nrp);
-syncMatrix = zeros(numberOfPositions,Nrp);
-for k = 1:numberOfPositions
-    dataMatrix(k,:) = data(startIndices(k):startIndices(k)+Nrp-1);
-    syncMatrix(k,:) = sync(startIndices(k):startIndices(k)+Nrp-1);
+% find begginings of positions
+data_pos_dif = diff([false; ~data_sc; false]);
+data_pos_len = find(data_pos_dif<0) - find(data_pos_dif>0);
+data_pos_idx = find(data_pos_dif>0);
+
+data_pos_valid = data_pos_len >= 2*data_Nrp; %2.5*con_Tp*data_Fs;
+data_pos_idx = data_pos_idx(data_pos_valid);
+data_pos_len = data_pos_len(data_pos_valid);
+data_pos_idx = data_pos_idx + data_pos_len;
+clear data_pos_dif data_pos_valid data_pos_len;
+
+% add the guard band
+%data_pos_idx = data_pos_idx + data_Nrp + 0.5*data_N;
+%figure(); plot(data_sc); hold on; xline(data_pos_idx, 'r');
+
+% assemble 2D matrices
+data_pos_idx = cell2mat(arrayfun(@(x) x:x+data_Nrp-1, data_pos_idx, 'UniformOutput', false));
+data_bs = data_bs(data_pos_idx);
+data_sc = data_sc(data_pos_idx);
+clear data_pos_idx;
+
+% set number of possitions
+data_P = size(data_bs, 1);
+
+% process every position separatelly
+sar_data = NaN(data_P, data_N);
+for i = 1:size(data_bs,1)
+    % find upchrip begginings
+    upchrip_idx = diff([false, data_sc(i, :), false]);
+    upchrip_len = find(upchrip_idx<0) - find(upchrip_idx>0);
+    upchrip_idx = find(upchrip_idx>0);
+    upchrip_idx = upchrip_idx(upchrip_len >= 0.9 * data_N);
+
+    % average upchirp
+    upchrip = cell2mat(arrayfun(@(x) data_bs(i, x:x+data_N-1), upchrip_idx, 'UniformOutput', false));
+    sar_data(i, :) = mean(reshape(upchrip', data_N, length(upchrip_idx))', 1); %#ok<UDIM> 
 end
+clear upchrip_idx upchrip data_bs;
 
-%% APPLYING HILBERT TRANSFORM
-% First, integrate over all up-chirps
-dataIntegrated = zeros(numberOfPositions,N);
-sequenceToFind = [0, 0, 1, 1];
-for k = 1:numberOfPositions
-    upchirpStart = strfind(syncMatrix(k,:),sequenceToFind);
-    for j = 1:(length(upchirpStart)-1)
-        dataIntegrated(k,:) = dataIntegrated(k,:) + dataMatrix(k,(upchirpStart(j)+2):(upchirpStart(j)+1+N));
-    end
-    dataIntegrated(k,:) = dataIntegrated(k,:)/length(upchirpStart);
-end
+dataIntegrated = sar_data;
 
 %Now for Hilbert transform:
 %FFT each row
@@ -59,6 +106,7 @@ dataIFFT = ifft(dataFFT,N,2);
 dataIFFT(isnan(dataIFFT)) = 1e-30;
 
 %% APPLYING HANN WINDOWING
+numberOfPositions = size(dataIntegrated,1);
 windowed = zeros(numberOfPositions,N);
 hanningWindow = hann(N)';
 for k = 1:numberOfPositions
@@ -130,8 +178,8 @@ d_range_2 = 100;
 c_range_1 = -25; 
 c_range_2 = 25;  
 flipped = fliplr(rot90(ifft_interp_dm)); 
-d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 3.5);
-d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 3.5);
+d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 4);
+d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 4);
 c_index1 = round((size(flipped,2)/rail_r_max) * (c_range_1+(rail_r_max/2)));
 c_index2 = round((size(flipped,2)/rail_r_max) * (c_range_2+(rail_r_max/2)));
 
@@ -147,4 +195,4 @@ truncated_db = 20 * log10(abs(truncated_final));
 
 figure();
 imagesc(cross_range, down_range, truncated_db);  
-xlim([-70 70]); caxis([-60 -20]); colorbar;
+xlim([-70 70]); caxis([-60 -10]); colorbar;
