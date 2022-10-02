@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 % Read the audiofile 
-[y,Fs] = audioread('SAR_Test_File.m4a'); 
+[y,Fs] = audioread('audacity_recordings/SAR_4.wav'); 
 
 %% SETTING UP DATA MATRIX
 % Separate the sync data and radar backscatter data and take care of data
@@ -63,7 +63,7 @@ data_pos_idx = find(data_pos_dif>0);
 data_pos_valid = data_pos_len >= 2*data_Nrp; %2.5*con_Tp*data_Fs;
 data_pos_idx = data_pos_idx(data_pos_valid);
 data_pos_len = data_pos_len(data_pos_valid);
-data_pos_idx = data_pos_idx + data_pos_len;
+data_pos_idx = data_pos_idx + data_pos_len-1;
 clear data_pos_dif data_pos_valid data_pos_len;
 
 % add the guard band
@@ -71,7 +71,7 @@ clear data_pos_dif data_pos_valid data_pos_len;
 %figure(); plot(data_sc); hold on; xline(data_pos_idx, 'r');
 
 % assemble 2D matrices
-data_pos_idx = cell2mat(arrayfun(@(x) x:x+data_Nrp-1, data_pos_idx, 'UniformOutput', false));
+data_pos_idx = cell2mat(arrayfun(@(x) x:x+data_Nrp-1, data_pos_idx(1:end-1), 'UniformOutput', false));
 data_bs = data_bs(data_pos_idx);
 data_sc = data_sc(data_pos_idx);
 clear data_pos_idx;
@@ -175,8 +175,8 @@ rail_r_max = padding * delta_x;
 
 d_range_1 = 1;
 d_range_2 = 100;
-c_range_1 = -25; 
-c_range_2 = 25;  
+c_range_1 = -25*0.5; 
+c_range_2 = 25*0.5;  
 flipped = fliplr(rot90(ifft_interp_dm)); 
 d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 4);
 d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 4);
