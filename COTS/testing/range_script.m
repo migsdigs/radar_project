@@ -2,7 +2,7 @@ close all; clear; clc;
 
 %% COMPUTE RANGE FROM AUDIO FILE
 % Read the audiofile 
-[y,Fs] = audioread('audacity_recordings\multiple_targets_range.wav'); 
+[y,Fs] = audioread('audacity_recordings\single_target_range.wav'); 
 
 % Separate the sync data and radar backscatter data and take care of data
 % inversion by the sound card
@@ -37,6 +37,7 @@ for i = 2:(size(sync_pulse)-N)
         k = k + 1;
     end
 end
+disp('End')
 
 % MS Clutter Rejection
 final_data = bsxfun(@minus, up_data_parsed, mean(up_data_parsed, 1)); % Subtract column mean to each column

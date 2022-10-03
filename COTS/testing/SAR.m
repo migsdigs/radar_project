@@ -175,8 +175,8 @@ rail_r_max = padding * delta_x;
 
 d_range_1 = 1;
 d_range_2 = 100;
-c_range_1 = -25*0.5; 
-c_range_2 = 25*0.5;  
+c_range_1 = -25; 
+c_range_2 = 25;  
 flipped = fliplr(rot90(ifft_interp_dm)); 
 d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 4);
 d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 4);
