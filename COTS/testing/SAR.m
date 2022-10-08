@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 % Read the audiofile 
-[y,Fs] = audioread('audacity_recordings/SAR_4.wav'); 
+[y,Fs] = audioread('SAR_Test_File.m4a'); 
 
 %% SETTING UP DATA MATRIX
 % Separate the sync data and radar backscatter data and take care of data
@@ -112,6 +112,7 @@ hanningWindow = hann(N)';
 for k = 1:numberOfPositions
     windowed(k,:) = dataIFFT(k,:).*hanningWindow;
 end
+% windowed = dataIFFT;
 
 kr = linspace(4*pi/c*fStart,4*pi/c*fStop,N);
 xa = linspace(-(delta_x*numberOfPositions)/2,(delta_x*numberOfPositions)/2,numberOfPositions);
@@ -178,8 +179,8 @@ d_range_2 = 100;
 c_range_1 = -25; 
 c_range_2 = 25;  
 flipped = fliplr(rot90(ifft_interp_dm)); 
-d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 4);
-d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 4);
+d_index1 = round((size(flipped,1)/r_max) * d_range_1 * 3);
+d_index2 = round((size(flipped,1)/r_max) * d_range_2 * 3);
 c_index1 = round((size(flipped,2)/rail_r_max) * (c_range_1+(rail_r_max/2)));
 c_index2 = round((size(flipped,2)/rail_r_max) * (c_range_2+(rail_r_max/2)));
 

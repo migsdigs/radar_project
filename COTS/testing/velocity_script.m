@@ -3,7 +3,7 @@ close all; clear; clc;
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile 
 % [y,Fs] = audioread('Velocity_Test_File.m4a'); 
-[y,Fs] = audioread('RealTimeTest.wav'); 
+[y,Fs] = audioread('audacity_recordings/SDR_CWIF_MULTIPLE.wav'); 
 
 
 % Take care of data inversion by the sound card

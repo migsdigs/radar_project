@@ -4,7 +4,7 @@ close all; clear; clc;
 
 
 % Read the audiofile 
-[y,Fs] = audioread('audacity_recordings\jonne_sprint_away_towards.wav'); 
+[y,Fs] = audioread('audacity_recordings\WavFile1.wav'); 
 
 % Parameters and Constants
 c = 299792458;                % Speed of light [m/s]
