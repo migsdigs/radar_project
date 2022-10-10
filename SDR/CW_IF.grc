@@ -64,7 +64,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 312.0]
+    coordinate: [336, 392.0]
     rotation: 0
     state: true
 - name: blocks_complex_to_float_0
@@ -112,7 +112,7 @@ blocks:
     bits_per_sample3: FORMAT_VORBIS
     bits_per_sample4: FORMAT_PCM_16
     comment: ''
-    file: C:\Users\jonne\OneDrive\Documents\University\Master\P5\RADAR\radar_project\COTS\audacity_recordings\SDR_CWIF_MULTIPLE.wav
+    file: C:\Users\jonne\OneDrive\Documents\University\Master\P5\RADAR\radar_project\COTS\audacity_recordings\SDR_CWIF_MULTIPLE_REAL.wav
     format: FORMAT_WAV
     nchan: '1'
     samp_rate: '44100'
@@ -134,7 +134,7 @@ blocks:
     bits_per_sample3: FORMAT_VORBIS
     bits_per_sample4: FORMAT_PCM_16
     comment: ''
-    file: C:\Users\jonne\OneDrive\Documents\University\Master\P5\RADAR\radar_project\COTS\audacity_recordings\SDR_CWIF_MULTIPLE_COMPLEMENTARY.wav
+    file: C:\Users\jonne\OneDrive\Documents\University\Master\P5\RADAR\radar_project\COTS\audacity_recordings\SDR_CWIF_MULTIPLE_IMAG.wav
     format: FORMAT_WAV
     nchan: '1'
     samp_rate: '44100'
@@ -167,6 +167,67 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [728, 216.0]
+    rotation: 0
+    state: true
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: float
+    update_time: '0.10'
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1184, 432.0]
     rotation: 0
     state: true
 - name: qtgui_waterfall_sink_x_1
@@ -220,14 +281,14 @@ blocks:
     name: '""'
     nconnections: '1'
     showports: 'False'
-    type: complex
+    type: float
     update_time: '0.10'
     wintype: window.WIN_BLACKMAN_hARRIS
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [952, 168.0]
+    coordinate: [1184, 88.0]
     rotation: 0
     state: true
 - name: uhd_usrp_sink_0
@@ -504,7 +565,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [616, 384.0]
+    coordinate: [728, 384.0]
     rotation: 0
     state: true
 - name: uhd_usrp_source_0
@@ -940,7 +1001,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 144.0]
+    coordinate: [328, 216.0]
     rotation: 0
     state: true
 
@@ -948,10 +1009,11 @@ connections:
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [analog_sig_source_x_0, '0', uhd_usrp_sink_0, '0']
 - [blocks_complex_to_float_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_complex_to_float_0, '0', qtgui_waterfall_sink_x_1, '0']
 - [blocks_complex_to_float_0, '1', blocks_wavfile_sink_1, '0']
+- [blocks_complex_to_float_0, '1', qtgui_waterfall_sink_x_0, '0']
 - [blocks_multiply_xx_0, '0', filter_fft_low_pass_filter_0, '0']
 - [filter_fft_low_pass_filter_0, '0', blocks_complex_to_float_0, '0']
-- [filter_fft_low_pass_filter_0, '0', qtgui_waterfall_sink_x_1, '0']
 - [uhd_usrp_source_0, '0', blocks_multiply_xx_0, '0']
 
 metadata:

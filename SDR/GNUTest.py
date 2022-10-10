@@ -111,7 +111,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.uhd_usrp_sink_0.set_center_freq(5800000000, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
         self.uhd_usrp_sink_0.set_gain(60, 0)
-        self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_c(
+        self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_f(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
@@ -125,6 +125,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.qtgui_waterfall_sink_x_1.enable_axis_labels(True)
 
 
+        self.qtgui_waterfall_sink_x_1.set_plot_pos_half(not True)
 
         labels = ['', '', '', '', '',
                   '', '', '', '', '']
@@ -146,9 +147,45 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self._qtgui_waterfall_sink_x_1_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_1.qwidget(), Qt.QWidget)
 
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_1_win)
+        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_f(
+            1024, #size
+            window.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "", #name
+            1, #number of inputs
+            None # parent
+        )
+        self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_0.enable_grid(False)
+        self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
+
+
+        self.qtgui_waterfall_sink_x_0.set_plot_pos_half(not True)
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
+        colors = [0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+                  1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
+            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
+
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.qwidget(), Qt.QWidget)
+
+        self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.filter_fft_low_pass_filter_0 = filter.fft_filter_ccc(1, firdes.low_pass(1, samp_rate, 1000, 200, window.WIN_HAMMING, 6.76), 1)
         self.blocks_wavfile_sink_1 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE_COMPLEMENTARY.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE_IMAG.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
@@ -156,7 +193,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
             False
             )
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE_REAL.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
@@ -175,9 +212,10 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.connect((self.analog_sig_source_x_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_wavfile_sink_1, 0))
+        self.connect((self.blocks_complex_to_float_0, 1), (self.qtgui_waterfall_sink_x_0, 0))
+        self.connect((self.blocks_complex_to_float_0, 0), (self.qtgui_waterfall_sink_x_1, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.filter_fft_low_pass_filter_0, 0))
         self.connect((self.filter_fft_low_pass_filter_0, 0), (self.blocks_complex_to_float_0, 0))
-        self.connect((self.filter_fft_low_pass_filter_0, 0), (self.qtgui_waterfall_sink_x_1, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_multiply_xx_0, 0))
 
 
@@ -196,6 +234,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
         self.filter_fft_low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 1000, 200, window.WIN_HAMMING, 6.76))
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_waterfall_sink_x_1.set_frequency_range(0, self.samp_rate)
         self.uhd_usrp_sink_0.set_samp_rate(self.samp_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.samp_rate)
