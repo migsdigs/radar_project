@@ -3,13 +3,13 @@ close all; clear; clc;
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile 
 % [y,Fs] = audioread('Velocity_Test_File.m4a'); 
-[I,Fs] = audioread('audacity_recordings/SDR_CWIF_MULTIPLE_REAL.wav'); 
-[Q,Fs] = audioread('audacity_recordings/SDR_CWIF_MULTIPLE_IMAG.wav'); 
+[I,Fs] = audioread('audacity_recordings/SDR_CWIF_BREATHING_JONNE2_REAL.wav'); 
+[Q,Fs] = audioread('audacity_recordings/SDR_CW_MULTIPLE_IMAG.wav'); 
 
 
 % Take care of data inversion by the sound card
-data = complex(I,Q);%-y(:,1); % Intensity of the received signal
-data2 = conj(data);
+data = -I(:,1); % Intensity of the received signal
+%data2 = conj(data);
 
 % Parameters
 c = 299792458;                % Speed of light [m/s]
