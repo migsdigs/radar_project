@@ -110,7 +110,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_sink_0.set_center_freq(5800000000, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(60, 0)
+        self.uhd_usrp_sink_0.set_gain(45, 0)
         self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_f(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -185,7 +185,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.filter_fft_low_pass_filter_0 = filter.fft_filter_ccc(1, firdes.low_pass(1, samp_rate, 1000, 200, window.WIN_HAMMING, 6.76), 1)
         self.blocks_wavfile_sink_1 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE_IMAG.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE2_IMAG.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
@@ -193,14 +193,14 @@ class GNUTest(gr.top_block, Qt.QWidget):
             False
             )
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_MULTIPLE_REAL.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE2_REAL.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
             blocks.FORMAT_PCM_16,
             False
             )
-        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.blocks_multiply_conjugate_cc_0 = blocks.multiply_conjugate_cc(1)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
         self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 4000, 1, 0, 0)
 
@@ -208,15 +208,15 @@ class GNUTest(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
+        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_conjugate_cc_0, 1))
         self.connect((self.analog_sig_source_x_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_wavfile_sink_1, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.blocks_complex_to_float_0, 0), (self.qtgui_waterfall_sink_x_1, 0))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.filter_fft_low_pass_filter_0, 0))
+        self.connect((self.blocks_multiply_conjugate_cc_0, 0), (self.filter_fft_low_pass_filter_0, 0))
         self.connect((self.filter_fft_low_pass_filter_0, 0), (self.blocks_complex_to_float_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_multiply_xx_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_multiply_conjugate_cc_0, 0))
 
 
     def closeEvent(self, event):
