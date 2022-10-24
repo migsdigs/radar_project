@@ -10,4 +10,4 @@ EK2370 - Build your own radar project course
 
 |   |
 |---|
-| ![real_time_range_multi](/gifs/range_realtime_multi_gif.gif) <br> Real Time Range Measurements with Multiple Targets |
+| ![real_time_range_multi](/gifs/range_realtime_multi_gif.gif) <br> Real Time Range Measurements with Multiple Targets |  ![breathing_sdr](/gifs/breathing_sdr.png) <br> Data while observing chest breathing: Phase plot (left) \& FFT (right) | 
