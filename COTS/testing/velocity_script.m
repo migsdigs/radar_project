@@ -3,7 +3,7 @@ close all; clear; clc;
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile 
 % [y,Fs] = audioread('Velocity_Test_File.m4a'); 
-[I,Fs] = audioread('audacity_recordings/SDR_CWIF_BREATHING_JONNE2_REAL.wav'); 
+[I,Fs] = audioread('audacity_recordings/CW_MULTI_REDO.wav'); 
 [Q,Fs] = audioread('audacity_recordings/SDR_CW_MULTIPLE_IMAG.wav'); 
 
 

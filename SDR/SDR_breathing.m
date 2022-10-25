@@ -2,7 +2,7 @@ close all; clear; clc;
 
 %% COMPUTE VELOCITY FROM AUDIO FILE
 % Read the audiofile  
-[y,Fs] = audioread('audacity_recordings/SDR_CWIF_BREATHING_JONNE3_REAL.wav'); 
+[y,Fs] = audioread('audacity_recordings/SDR_CWIF_BREATHING_JONNE4_REAL.wav'); 
 
 data = y(100000:end,1);
 
@@ -22,4 +22,4 @@ delta_f = linspace(0, Fs/2, size(data, 1));
 figure(3), clf();
 subplot(1,2,1); plot(range); title("Data Captured (Phase shift)"); grid on;
 
-subplot(1,2,2); plot(delta_f, dataFFT); grid on; title("FFT"); xlim([0, 2]); ylim([70 130]);
+subplot(1,2,2); plot(delta_f, dataFFT); grid on; title("FFT"); xlim([0, 2]); ylim([70 100]);

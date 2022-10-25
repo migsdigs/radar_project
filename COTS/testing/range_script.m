@@ -2,12 +2,12 @@ close all; clear; clc;
 
 %% COMPUTE RANGE FROM AUDIO FILE
 % Read the audiofile 
-[y,Fs] = audioread('audacity_recordings\single_target_range.wav'); 
+[y,Fs] = audioread('audacity_recordings\FMCW_MULTI_REDO2.wav'); 
 
 % Separate the sync data and radar backscatter data and take care of data
 % inversion by the sound card
 data = -y(:,1); % Radar backscatter data (received reflected signal)
-sync = y(:,2); % Sync data (square waveform)
+sync = -y(:,2); % Sync data (square waveform)
 
 % Parameters
 c = 299792458;                % Speed of light [m/s]

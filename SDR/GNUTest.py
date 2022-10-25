@@ -95,7 +95,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_source_0.set_center_freq(5800000000, 0)
         self.uhd_usrp_source_0.set_antenna("RX2", 0)
-        self.uhd_usrp_source_0.set_gain(50, 0)
+        self.uhd_usrp_source_0.set_gain(40, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join(("", '')),
             uhd.stream_args(
@@ -110,7 +110,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
 
         self.uhd_usrp_sink_0.set_center_freq(5800000000, 0)
         self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
-        self.uhd_usrp_sink_0.set_gain(50, 0)
+        self.uhd_usrp_sink_0.set_gain(40, 0)
         self.qtgui_waterfall_sink_x_1 = qtgui.waterfall_sink_f(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -185,7 +185,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
         self.top_layout.addWidget(self._qtgui_waterfall_sink_x_0_win)
         self.filter_fft_low_pass_filter_0 = filter.fft_filter_ccc(1, firdes.low_pass(1, samp_rate, 1000, 200, window.WIN_HAMMING, 6.76), 1)
         self.blocks_wavfile_sink_1 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE4_IMAG.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE5_IMAG.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
@@ -193,7 +193,7 @@ class GNUTest(gr.top_block, Qt.QWidget):
             False
             )
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(
-            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE4_REAL.wav',
+            'C:\\Users\\jonne\\OneDrive\\Documents\\University\\Master\\P5\\RADAR\\radar_project\\COTS\\audacity_recordings\\SDR_CWIF_BREATHING_JONNE5_REAL.wav',
             1,
             44100,
             blocks.FORMAT_WAV,
