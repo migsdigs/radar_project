@@ -91,15 +91,15 @@ sfftFridgeDown = fft(MTI3_down, 4*N,2);
 % fridge_down = [fridge11; fridge22; [fridge33, zeros(length(fridge33),1)]];
 
 % compute range and velocity
-% f_beat = (fridge_down + fridge_up) / 2;
-% rangeExtracted = 15*(f_beat * c * Tp) / bandwidth;
-% f_dopler = (fridge_down - fridge_up) / 2;
-% velExtracted = 20*(c * f_dopler) / (2 * f_center);
+f_beat = (fridge_down + fridge_up) / 2;
+rangeExtracted = 15*(f_beat * c * Tp) / bandwidth;
+f_dopler = (fridge_down - fridge_up) / 2;
+velExtracted = 20*(c * f_dopler) / (2 * f_center);
 
 % Compute range and velocity using difference method
-rangeExtracted = 15*(fridge_up*c*Tp)/bandwidth;
-velExtracted = zeros(numRidges,length(rangeExtracted));
-velExtracted(:,5:end) = (rangeExtracted(5:end,:)' - rangeExtracted(1:end-4,:)')/(5*Tp);
+% rangeExtracted = 15*(fridge_up*c*Tp)/bandwidth;
+% velExtracted = zeros(numRidges,length(rangeExtracted));
+% velExtracted(:,5:end) = (rangeExtracted(5:end,:)' - rangeExtracted(1:end-4,:)')/(5*Tp);
 
 %% Plotting
 % Assembling the figure
